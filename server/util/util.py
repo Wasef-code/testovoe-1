@@ -1,28 +1,33 @@
-import jwt
-from models import UserDB
-from state import SECRET_KEY
-from datetime import datetime, timedelta
 from typing import Any
-from userRepository import UserRepository
-def CreateJWT(user: UserDB) -> str:
+import jwt
+from models.models import UserDB
+from deps.deps import get_secret_key
+from datetime import datetime, timedelta
+from repos.userRepository import UserRepository
+
+
+def create_jwt(user: UserDB) -> str:
     return jwt.encode({
         "uuid": user.uuid,
         "email": user.email.__str__(),
         "phone_number": user.phone_number,
         "password": user.password,
         "exp": datetime.now() + timedelta(days=1)
-    }, SECRET_KEY, "HS256")
-def VerifyJWT(token: str, user_repo: UserRepository, user_to: UserDB=None) -> bool:
+    }, get_secret_key(), "HS256")
+
+
+def verify_jwt(token: str, user_repo: UserRepository, user_to: UserDB = None) -> bool:
     try:
-        x: dict[str, Any] = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        user = user_repo.GetUser(x["uuid"])
+        x: dict[str, Any] = jwt.decode(token, get_secret_key(), \
+            algorithms=["HS256"])
+        user = user_repo.get_user(x["uuid"])
         if user is None:
             return False
         if not (user.email == x["email"] and user.phone_number == x["phone_number"]):
             return False
         if not user.password == x["password"]:
             return False
-        if not user_to is None:
+        if user_to is not None:
             user_to.uuid = user.uuid
             user_to.email = user.email
             user_to.phone_number = user.phone_number
@@ -35,14 +40,10 @@ def VerifyJWT(token: str, user_repo: UserRepository, user_to: UserDB=None) -> bo
         return True
     except jwt.ExpiredSignatureError:
         return False
-def RefreshJWT(original_token: str, user_repo: UserRepository, uuid: str) -> str:
-    if not VerifyJWT(original_token, user_repo):
+
+
+def refresh_jwt(original_token: str, user_repo: UserRepository) -> str:
+    u = UserDB()
+    if not verify_jwt(original_token, user_repo, user_to=u):
         return ""
-    return CreateJWT(user_repo.GetUser(uuid))
-def GetUserFromJWT(token: str, user_repo: UserRepository) -> UserDB:
-    user = UserDB()
-    if not VerifyJWT(token, user_repo, user_to=user):
-        return None
-    return user
-def UpdateCurrencyRates():
-    pass # TODO: Implement currency rate update
+    return create_jwt(user_repo.get_user(u.uuid))

@@ -20,13 +20,10 @@ services:
           # this command will create database as described in init file 
      # - .:/docker-entrypoint-initdb.d/       
       - db_volume:/var/lib/postgresql
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
   backend:
-     build: ./server/
+     build:
+        context: ./server/
+        dockerfile: backend.dockerfile
      volumes:
       - .:/server/
      ports:
@@ -34,16 +31,16 @@ services:
      depends_on:
       - db
      restart: on-failure
-     command: ["uvicorn", "main:app", "--host", "0.0.0.0"]
+     command: ["uvicorn", "app_main:app", "--host", "0.0.0.0"]
   celery:
-    build: ./celery/
-    volumes:
-     - .:/celery/
+    build:
+        context: ./server/
+        dockerfile: celery.dockerfile
     depends_on:
      - db
      - rabbit
     restart: on-failure
-    command: ["celery", "-A", "celery_main.celery_app", "worker", "--beat"]
+    command: ["celery", "-A", "celery_main", "worker", "--beat"]
   rabbit:
     image: rabbitmq:3
     ports:

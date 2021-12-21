@@ -1,5 +1,6 @@
 import requests
-import pytest
+
+
 def register():
     response = requests.post("http://localhost:8000/register", json={
         "email": "kaisergrobe@gmail.com",
@@ -18,6 +19,8 @@ def register():
     })
     assert response.json()["Message"] == "Verified successfully!"
     return x
+
+
 def test_account_creation():
     x = register()
     user_id = x["Identifier"]
