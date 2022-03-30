@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 
-class User(BaseModel):
+class UserModel(BaseModel):
     email: str
     phone_number: str
     password: str
@@ -15,13 +15,13 @@ class User(BaseModel):
         orm_mode = True
 
 
-class LoginUser(BaseModel):
+class LoginUserModel(BaseModel):
     email: Optional[str]
     phone_number: Optional[str]
     password: str
 
 
-class ResetUser(BaseModel):
+class ResetUserModel(BaseModel):
     uuid: str
     token: str
     email: Optional[list[str]]
@@ -32,12 +32,12 @@ class ResetUser(BaseModel):
     password: Optional[list[str]]
 
 
-class RestoreUser(BaseModel):
+class RestoreUserModel(BaseModel):
     email: list[str]
     password: list[str]
 
 
-class Currency(BaseModel):
+class CurrencyModel(BaseModel):
     tag: str
     name: str
     cost: float
@@ -46,7 +46,7 @@ class Currency(BaseModel):
         orm_mode = True
 
 
-class Transaction(BaseModel):
+class TransactionModel(BaseModel):
     amount: float
     currency_tag: str
     account_from_id: str
@@ -57,14 +57,14 @@ class Transaction(BaseModel):
         orm_mode = True
 
 
-class TransactionRequest(BaseModel):
+class TransactionRequestModel(BaseModel):
     token: str
     account_from_id: str
     account_to_id: str
     amount: float
 
 
-class Account(BaseModel):
+class AccountModel(BaseModel):
     currency_tag: str
     user_id: str
 

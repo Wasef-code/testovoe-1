@@ -1,12 +1,4 @@
 {
-    "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "python.linting.pycodestyleEnabled": true,
-    "python.autoComplete.extraPaths": [
-        "../"
-    ],
-    "python.linting.pycodestyleArgs": ["--line_length", "115"],
-    "python.analysis.extraPaths": [
-        "../"
-    ]
+    "python.linting.flake8Enabled": true
 }
