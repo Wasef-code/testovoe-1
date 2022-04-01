@@ -9,8 +9,9 @@ class TransactionRepository(BaseRepository[Transaction]):
 
     def get_by_account(self, account: Account) -> list[Transaction]:
         transactions_list = []
-        for i in self.__internal:
-            obj = self.__internal[i]
+        internal = self.get_internal()
+        for i in self:
+            obj = internal[i]
             if Conditioner.AnyEqual(obj.account_from_id, obj.account_to_id,
                                     account.uuid):
                 transactions_list.append(obj)

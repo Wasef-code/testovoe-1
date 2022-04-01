@@ -7,10 +7,10 @@ ModelType = TypeVar("ModelType", bound=Base)
 
 
 class BaseRepository(Generic[ModelType]):
-    __internal: dict[str, ModelType] = {}
+    __internal: dict[UUID, ModelType] = {}
 
-    def generate_uuid(self) -> str:
-        key = generate_id()
+    def generate_uuid(self) -> UUID:
+        key = UUID(generate_id())
         while key in self.__internal:
             key = generate_id()
         return key
@@ -30,8 +30,8 @@ class BaseRepository(Generic[ModelType]):
         self.__internal[obj.uuid] = obj
         return obj.uuid
 
-    def get(self, uuid: str) -> ModelType:
-        return self.__internal.get(UUID(uuid))
+    def get(self, uuid: UUID) -> ModelType:
+        return self.__internal.get(uuid)
 
     def get_all(self):
         return self.__internal.values()

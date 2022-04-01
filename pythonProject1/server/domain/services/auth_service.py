@@ -25,7 +25,7 @@ class AuthService:
                            user_repository.
                            check_phone_is_busy(model.phone_number)):
             return {"Message": "User with this email/phone exists!"}
-        uzver = User(uuid="", email=model.email,
+        uzver = User(uuid=None, email=model.email,
                      phone_number=model.phone_number,
                      password="", name=model.name,
                      last_name=model.last_name,
