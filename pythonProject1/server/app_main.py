@@ -35,8 +35,9 @@ def startup():
                 name="Доллар",
                 cost=1
             ))
+            session.flush()
         except Exception:
-            pass
+            session.rollback()
 
 
 startup()

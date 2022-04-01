@@ -6,7 +6,7 @@ cache: dict[type, object] = {}
 
 
 def get_db() -> DbInterface:
-    url = 'postgresql+psycopg2://postgres:postgres@localhost:5432/maindb'
+    url = 'postgresql+psycopg2://postgres:postgres@db/maindb'
     db_interface = cache.get(DbInterface)
     if db_interface is None:
         db_interface = DbInterface(url)

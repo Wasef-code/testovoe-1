@@ -7,6 +7,7 @@ from domain.util.Conditioner import Conditioner
 from domain.util.util import phone_validator, password_validator, refresh_jwt
 from hashlib import sha256
 from domain.util.util import create_jwt, verify_jwt
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class AuthService:
@@ -43,7 +44,11 @@ class AuthService:
         user_object = self.repo_object.update(self.repo_object.get(identifier),
                                               {"activated": True})
         with get_db().create_session() as session, session.begin():
-            session.add(user_object)
+            try:
+                session.add(user_object)
+                session.flush()
+            except SQLAlchemyError:
+                session.rollback()
         self.temp.pop(identifier)
         return {"Message": "Verified successfully!"}
 
